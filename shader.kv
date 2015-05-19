@@ -29,17 +29,22 @@ BoxLayout:
             size_hint_y: None
             size: self.minimum_size
             TextureChoice:
-                on_source: shader.iChannel0 = self.source
+                on_source: shader.iChannel0_source = self.source
+                on_texture: shader.iChannel0 = self.texture
             TextureChoice:
-                on_source: shader.iChannel1 = self.source
+                on_source: shader.iChannel1_source = self.source
+                on_texture: shader.iChannel1 = self.texture
             TextureChoice:
-                on_source: shader.iChannel2 = self.source
+                on_source: shader.iChannel2_source = self.source
+                on_texture: shader.iChannel2 = self.texture
             TextureChoice:
-                on_source: shader.iChannel3 = self.source
+                on_source: shader.iChannel3_source = self.source
+                on_texture: shader.iChannel3 = self.texture
 
 
 <TextureChoice>:
     source: img.source or ''
+    texture: img.texture
     size_hint_y: None
     height: 64
     Image:
@@ -49,4 +54,4 @@ BoxLayout:
         width: 64
     Spinner:
         id: spinner
-        values: listdir('textures')
+        values: sorted(listdir('textures'))
