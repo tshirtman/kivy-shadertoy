@@ -1,0 +1,52 @@
+#:import listdir os.listdir
+
+BoxLayout:
+    ShaderWidget:
+        id: shader
+        canvas:
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+    BoxLayout:
+        orientation: 'vertical'
+        BoxLayout:
+            orientation: 'vertical'
+            CodeInput:
+                id: ti
+                text: shader.shader_source
+
+            Button:
+                size_hint_y: None
+                height: '48dp'
+                text: 'update!'
+                on_press: shader.shader_source = ti.text
+
+        GridLayout:
+            cols: 2
+            size_hint_y: None
+            size: self.minimum_size
+            TextureChoice:
+                on_source: shader.iChannel0 = self.source
+            TextureChoice:
+                on_source: shader.iChannel1 = self.source
+            TextureChoice:
+                on_source: shader.iChannel2 = self.source
+            TextureChoice:
+                on_source: shader.iChannel3 = self.source
+
+
+<TextureChoice>:
+    source: img.source or ''
+    size_hint_y: None
+    height: 64
+    Image:
+        id: img
+        source: 'textures/%s' % spinner.text
+        size_hint_x: None
+        width: 64
+    Spinner:
+        id: spinner
+        values: listdir('textures')
