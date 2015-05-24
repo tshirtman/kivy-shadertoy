@@ -26,19 +26,27 @@ uniform float iSampleRate;
 
 '''
 
-shader_base = '''
-void main(void){
-    gl_FragColor = vec4(.5, .5, .5, 1.0);
-    //gl_FragColor *= texture2D(iChannel0, tex_coord0);
+shader_base = '''\
+void mainImage(out vec4 fragColor, in vec2 fragCoord){
+    fragColor = vec4(.5, .5, .5, 1.0);
+    fragColor *= texture2D(iChannel0, fragCoord);
 }
 '''
 
+definition_template = '''
+uniform %s iChannel0;
+uniform %s iChannel1;
+uniform %s iChannel2;
+uniform %s iChannel3;
+
 '''
-uniform sampler2D iChannel0;
-uniform sampler2D iChannel1;
-uniform sampler2D iChannel2;
-uniform sampler2D iChannel3;
+
+shader_footer = '''
+void main(void){
+    mainImage(gl_FragColor, gl_FragCoord.xy);
+}
 '''
+
 
 class TextureChoice(BoxLayout):
     source = StringProperty('')
@@ -65,7 +73,7 @@ class ShaderWidget(Widget):
                   iChannel1_source=self.update_definitions,
                   iChannel2_source=self.update_definitions,
                   iChannel3_source=self.update_definitions,
-                  )
+                  ichannels_definition=self.update_definitions)
 
     def on_shader_source(self, *args):
         shader = self.canvas.shader
@@ -73,24 +81,19 @@ class ShaderWidget(Widget):
         shader.fs = (
             shader_header +
             self.ichannels_definition +
-            self.shader_source
-            )
+            self.shader_source +
+            shader_footer)
+
         if not shader.success:
             shader.fs = old_value
             app.warn('fs error')
 
     def update_definitions(self, *args):
-        self.ichannels_definition = '''
-        uniform %s iChannel0;
-        uniform %s iChannel1;
-        uniform %s iChannel2;
-        uniform %s iChannel3;
-        ''' % (
-            'Sampler2D' if 'tex' in self.iChannel0_source else 'SamplerCube',
-            'Sampler2D' if 'tex' in self.iChannel1_source else 'SamplerCube',
-            'Sampler2D' if 'tex' in self.iChannel2_source else 'SamplerCube',
-            'Sampler2D' if 'tex' in self.iChannel3_source else 'SamplerCube',
-        )
+        self.ichannels_definition = definition_template % (
+            'samplerCube' if 'cube' in self.iChannel0_source else 'sampler2D',
+            'samplerCube' if 'cube' in self.iChannel1_source else 'sampler2D',
+            'samplerCube' if 'cube' in self.iChannel2_source else 'sampler2D',
+            'samplerCube' if 'cube' in self.iChannel3_source else 'sampler2D')
 
     def update_glsl(self, dt):
         t = gmtime()

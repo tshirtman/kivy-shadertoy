@@ -31,15 +31,19 @@ BoxLayout:
             TextureChoice:
                 on_source: shader.iChannel0_source = self.source
                 on_texture: shader.iChannel0 = self.texture
+                text: '0'
             TextureChoice:
                 on_source: shader.iChannel1_source = self.source
                 on_texture: shader.iChannel1 = self.texture
+                text: '1'
             TextureChoice:
                 on_source: shader.iChannel2_source = self.source
                 on_texture: shader.iChannel2 = self.texture
+                text: '2'
             TextureChoice:
                 on_source: shader.iChannel3_source = self.source
                 on_texture: shader.iChannel3 = self.texture
+                text: '3'
 
 
 <TextureChoice>:
@@ -47,6 +51,11 @@ BoxLayout:
     texture: img.texture
     size_hint_y: None
     height: 64
+    text: ''
+    Label:
+        text: root.text
+        size_hint_x: None
+        width: self.texture_size[0]
     Image:
         id: img
         source: 'textures/%s' % spinner.text
