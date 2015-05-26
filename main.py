@@ -43,7 +43,7 @@ uniform %s iChannel3;
 
 shader_footer = '''
 void main(void){
-    mainImage(gl_FragColor, gl_FragCoord.xy);
+    mainImage(gl_FragColor, tex_coord0);
 }
 '''
 
